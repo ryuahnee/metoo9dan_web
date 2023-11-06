@@ -39,13 +39,13 @@
 
 ## ❕신경쓴 부분
 * ‘여러건 동시 결제’ DB저장 방법
-*  ### 실제 쇼핑몰에서 다중선택 후 일괄결제시 저장 방법에 대해 자문을 구해 결제번호는 PK로, 주문번호는 해당 결제건의 상품들의 주문번호를 통일하여 구분하도록 하였습니다. 
+###### 실제 쇼핑몰에서 다중선택 후 일괄결제시 저장 방법에 대해 자문을 구해 결제번호는 PK로, 주문번호는 해당 결제건의 상품들의 주문번호를 통일하여 구분하도록 하였습니다. 
 
   <img width="384" alt="image" src="https://github.com/ryuahnee/metoo9dan_web/assets/135402890/e5421abd-4022-417c-9c48-e29056303e65">
+  <br>
   <img width="613" alt="image" src="https://github.com/ryuahnee/metoo9dan_web/assets/135402890/55de5d4c-4652-4168-9897-89e8344ff873">
 
-<pre><code>
-  @Repository
+<pre><code>@Repository
 public interface PaymentsRepository extends JpaRepository<Payments, Integer> {
 
     // 가장 큰 OrderNumber값 가져옴
@@ -53,9 +53,8 @@ public interface PaymentsRepository extends JpaRepository<Payments, Integer> {
     Integer findMaxOrderNumber();
 </code></pre>
 
-<pre><code>
-  // OrderNumber의 가장 큰 값을 가져온다.
-  @Service
+<pre><code>// OrderNumber의 가장 큰 값을 가져온다.
+@Service
 @RequiredArgsConstructor
 public class PaymentsService {
 
