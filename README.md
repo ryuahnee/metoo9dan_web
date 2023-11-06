@@ -43,7 +43,7 @@
 <pre><code>
 </code></pre>
 
-#### ‣ [커밋히스토리 보러가기](https://github.com/ryuahnee/yompro/commits/user2)
+#### ‣ [커밋히스토리 보러가기](https://github.com/ryuahnee/metoo9dan_web/commits/master)
 
 ---
 
