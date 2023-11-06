@@ -37,12 +37,83 @@
 
 ---
 
-## ❕신경쓴 코드
-* 스프링시큐리티 권한별 접근 설정 (class SecurityConfig)
+## ❕신경쓴 부분
+* ‘여러건 동시 결제’ DB저장 방법
+*  ### 실제 쇼핑몰에서 다중선택 후 일괄결제시 저장 방법에 대해 자문을 구해 결제번호는 PK로, 주문번호는 해당 결제건의 상품들의 주문번호를 통일하여 구분하도록 하였습니다. 
+
+  <img width="384" alt="image" src="https://github.com/ryuahnee/metoo9dan_web/assets/135402890/e5421abd-4022-417c-9c48-e29056303e65">
+  <img width="613" alt="image" src="https://github.com/ryuahnee/metoo9dan_web/assets/135402890/55de5d4c-4652-4168-9897-89e8344ff873">
+
 <pre><code>
+  @Repository
+public interface PaymentsRepository extends JpaRepository<Payments, Integer> {
+
+    // 가장 큰 OrderNumber값 가져옴
+    @Query("SELECT MAX(p.orderNumber) FROM Payments p")
+    Integer findMaxOrderNumber();
 </code></pre>
-* admin page 접근 설정
+
 <pre><code>
+  // OrderNumber의 가장 큰 값을 가져온다.
+  @Service
+@RequiredArgsConstructor
+public class PaymentsService {
+
+    private final PaymentsRepository paymentsRepository;
+    private final GameService gameService;
+    private EntityManager entityManager;
+  
+    public int generateOrderNumber() {
+        Integer maxOrderNumber = paymentsRepository.findMaxOrderNumber();
+        if (maxOrderNumber == null) {
+            // 주문 번호를 생성할 데이터가 없다면 1로 시작
+            return 1;
+        } else {
+            // 가장 큰 주문 번호를 찾아서 1을 더함
+            int newOrderNumber = maxOrderNumber + 1;
+            return newOrderNumber;
+        }
+    }
+</code></pre>
+
+* 장바구니 기능 구현 
+
+<pre><code>
+    // 체크 박스가 선택된 경우
+      if (checkbox.checked) {
+          var gameContentNo = checkbox.value;
+          totalItemsElement.textContent = selectedGameContentNos.length;
+          total += salePrice;
+
+            if (totalItemsElement) {
+              totalItemsElement.textContent = selectedGameContentNos.length;
+           }
+
+          // 선택된 게임 콘텐츠 번호와 salePrice를 배열에 추가하고 세션 스토리지에 저장
+          if (!selectedGameContentNos.includes(gameContentNo)) {
+              selectedGameContentNos.push(gameContentNo);
+              selectedSalePrices.push(salePrice);
+              sessionStorage.setItem("selectedGameContentNos", JSON.stringify(selectedGameContentNos));
+              sessionStorage.setItem("selectedSalePrices", JSON.stringify(selectedSalePrices));
+          }
+      } else {
+          var gameContentNo = checkbox.value;
+          total -= salePrice;
+
+          // 선택 해제된 게임 콘텐츠 번호와 salePrice를 배열에서 제거하고 세션 스토리지를 업데이트
+          selectedGameContentNos = selectedGameContentNos.filter(function (value) {
+              return value !== gameContentNo;
+          });
+
+          var salePriceIndex = selectedGameContentNos.indexOf(gameContentNo);
+          if (salePriceIndex !== -1) {
+              selectedSalePrices.splice(salePriceIndex, 1);
+          }
+  
+          sessionStorage.setItem("selectedGameContentNos", JSON.stringify(selectedGameContentNos));
+          sessionStorage.setItem("selectedSalePrices", JSON.stringify(selectedSalePrices));
+      }
+
 </code></pre>
 
 #### ‣ [커밋히스토리 보러가기](https://github.com/ryuahnee/metoo9dan_web/commits/master)
