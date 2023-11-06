@@ -1,8 +1,7 @@
 # 바둑을 게임으로! '나도 9단'  
 
- <div align="center">
-<img width="80%"alt="스크린샷 2023-10-27 오전 9 50 06" src="https://github.com/ryuahnee/metoo9dan_web/assets/135402890/932e5dc5-0cd8-40d4-95ef-2cd99eb79c63">
-
+<div align="center">
+<img width="80%" alt="스크린샷 2023-10-27 오전 9 50 06" src="https://github.com/ryuahnee/metoo9dan_web/assets/135402890/f530df9c-8d52-4044-85bf-ef131101c48d">
 </div>
 
 <br>
