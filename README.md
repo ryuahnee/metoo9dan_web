@@ -45,7 +45,7 @@
   <img width="384" alt="image" src="https://github.com/ryuahnee/metoo9dan_web/assets/135402890/e5421abd-4022-417c-9c48-e29056303e65"> <br>
 ##### [DB저장 처리]
   <img width="613" alt="image" src="https://github.com/ryuahnee/metoo9dan_web/assets/135402890/55de5d4c-4652-4168-9897-89e8344ff873"> <br>
-
+##### [JpaRepository, Service 코드]
 <pre><code>@Repository
 public interface PaymentsRepository extends JpaRepository<Payments, Integer> {
 
