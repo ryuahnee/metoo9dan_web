@@ -75,10 +75,11 @@ public class PaymentsService {
             return newOrderNumber;
         }
     }
-</code></pre>
+</code></pre> <br>
 
 ### 2. 장바구니 기능 구현
-
+###### - '여러건 선택 결제'구현을 위해 사용자 편의를 위해 sessionStorage를 이용하여 장바구니 기능을 구현했습니다.
+##### [JS 코드]
 <pre><code>
     // 체크 박스가 선택된 경우
       if (checkbox.checked) {
