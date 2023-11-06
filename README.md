@@ -1,4 +1,4 @@
-![image](https://github.com/ryuahnee/metoo9dan_web/assets/135402890/9efb60e0-b52c-446a-97fa-1c0d65303915)# 바둑을 게임으로! '나도 9단'  
+# 바둑을 게임으로! '나도 9단'  
 
  <div align="center">
 <img width="80%" alt="스크린샷 2023-11-02 오전 3 26 17" src="https://github.com/ryuahnee/yompro/assets/135402890/2f49a241-60ad-4f23-82c8-3b4ce76e7dd6">
