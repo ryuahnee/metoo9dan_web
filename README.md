@@ -79,6 +79,8 @@ public class PaymentsService {
 
 ### 2. 장바구니 기능 구현
 ###### - '여러건 선택 결제'구현을 위해 사용자 편의를 위해 sessionStorage를 이용하여 장바구니 기능을 구현했습니다.
+<img width="336" alt="image" src="https://github.com/ryuahnee/metoo9dan_web/assets/135402890/fc11db07-800b-46dc-bfed-2f0491248983"> <br>
+
 ##### [JS 코드]
 <pre><code>
     // 체크 박스가 선택된 경우
