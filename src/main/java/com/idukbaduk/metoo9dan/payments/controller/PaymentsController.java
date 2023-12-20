@@ -7,12 +7,15 @@ import com.idukbaduk.metoo9dan.game.service.GameService;
 import com.idukbaduk.metoo9dan.member.service.MemberService;
 import com.idukbaduk.metoo9dan.payments.kakaopay.KakaoApproveResponse;
 import com.idukbaduk.metoo9dan.payments.kakaopay.KakaoPayService;
+import com.idukbaduk.metoo9dan.payments.exception.PaymentFailedException;
 import com.idukbaduk.metoo9dan.payments.service.PaymentsService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,6 +41,9 @@ public class PaymentsController {
     private final PaymentsService paymentsService;
     private final MemberService memberService;
     private final ResourcesFilesService resourcesFilesService;
+    private static final Logger logger = LoggerFactory.getLogger(PaymentsController.class);
+
+
 
 
     // 결제하기 폼
@@ -100,7 +106,8 @@ public class PaymentsController {
             paymentsService.processPayment(selectedGameContents, member, paymentMethod);
 
             return "redirect:/payments/list"; // 결제 성공시 결제 내역으로 이동
-        } catch (Exception e) {
+        } catch (PaymentFailedException e) {
+            logger.error("결제 처리 중 에러가 발생했습니다: " + e.getMessage());
             return "redirect:/payments/fail"; // 에러시 결제 실패 페이지로 이동
         }
     }

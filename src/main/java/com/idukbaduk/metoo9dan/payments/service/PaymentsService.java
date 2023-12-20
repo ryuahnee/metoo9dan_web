@@ -5,6 +5,7 @@ import com.idukbaduk.metoo9dan.common.entity.Member;
 import com.idukbaduk.metoo9dan.common.entity.Payments;
 import com.idukbaduk.metoo9dan.game.service.GameService;
 import com.idukbaduk.metoo9dan.member.repository.MemberRepository;
+import com.idukbaduk.metoo9dan.payments.exception.PaymentFailedException;
 import com.idukbaduk.metoo9dan.payments.repository.PaymentsRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -50,12 +51,16 @@ public class PaymentsService {
         }
     }
 
-    //결제하기
     @Transactional
-    public void processPayment(List<GameContents> selectedGameContents, Member member, String paymentMethod) {
+    public void processPayment(List<GameContents> selectedGameContents, Member member, String paymentMethod) throws PaymentFailedException {
         int orderNumber = generateOrderNumber();
-    // 해당 부분 수정 필요 함
+
         for (GameContents gameContents : selectedGameContents) {
+            // 예외 처리: paymentMethod가 비어있으면 PaymentFailedException 발생
+            if (paymentMethod == null || paymentMethod.isEmpty()) {
+                throw new PaymentFailedException("Payment method is empty or null");
+            }
+
             Payments payments = new Payments(orderNumber, member.getTel(), paymentMethod,
                     LocalDateTime.now(), "complete", gameContents.getSalePrice(),
                     member.getName(), gameContents, member);
@@ -67,6 +72,7 @@ public class PaymentsService {
         member.setMembershipStatus("유료회원");
         memberRepository.save(member);
     }
+
 
     public GameContents getGameContentsForPayment(Payments payment) {
         GameContents gameContents = gameService.getGameContents(payment.getGameContents().getGameContentNo());

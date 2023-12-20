@@ -227,19 +227,6 @@ public class MemberServiceImpl implements MemberService {
         member.setPassword(passwordEncoder.encode(tempPassword));
         memberRepository.save(member);
     }
-
-
-
-    //회원 '유료회원으로'업데이트 처리
-    @Transactional
-    public void userUpdate(Member member) {
-
-        member.setMembershipStatus("유료회원");
-        memberRepository.save(member);
-    }
-
-
-
 }
 
 

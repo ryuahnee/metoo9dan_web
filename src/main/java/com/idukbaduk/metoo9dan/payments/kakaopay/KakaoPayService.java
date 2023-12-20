@@ -79,7 +79,6 @@ public class KakaoPayService {
                 KakaoApproveResponse.class);
 
         paymentsService.processPayment(selectedGameContents, member, pay);
-        memberService.userUpdate(member);
         return approveResponse;
     }
 
