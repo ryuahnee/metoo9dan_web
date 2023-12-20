@@ -3,6 +3,7 @@ package com.idukbaduk.metoo9dan.payments.kakaopay;
 import com.idukbaduk.metoo9dan.common.entity.GameContents;
 import com.idukbaduk.metoo9dan.common.entity.Member;
 import com.idukbaduk.metoo9dan.member.service.MemberServiceImpl;
+import com.idukbaduk.metoo9dan.payments.exception.PaymentFailedException;
 import com.idukbaduk.metoo9dan.payments.service.PaymentsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -57,7 +58,7 @@ public class KakaoPayService {
     /**
      * 결제 완료 승인
      */
-    public KakaoApproveResponse approveResponse(String pgToken, Member member, List<GameContents> selectedGameContents, String pay, String memberId) {
+    public KakaoApproveResponse approveResponse(String pgToken, Member member, List<GameContents> selectedGameContents, String pay, String memberId) throws PaymentFailedException {
 
         // 카카오 요청
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
