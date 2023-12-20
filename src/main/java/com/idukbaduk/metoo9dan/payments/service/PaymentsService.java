@@ -56,16 +56,10 @@ public class PaymentsService {
         int orderNumber = generateOrderNumber();
 
         for (GameContents gameContents : selectedGameContents) {
-            Payments payments = new Payments();
-            payments.setOrderNumber(orderNumber);
-            payments.setContact(member.getTel());
-            payments.setMethod(paymentMethod);
-            payments.setPaymentDate(LocalDateTime.now());
-            payments.setStatus("complete"); // complete,waiting,refund
-            payments.setAmount(gameContents.getSalePrice());
-            payments.setDepositorName(member.getName());
-            payments.setGameContents(gameContents);
-            payments.setMember(member);
+            Payments payments = new Payments(orderNumber, member.getTel(), paymentMethod,
+                    LocalDateTime.now(), "complete", gameContents.getSalePrice(),
+                    member.getName(), gameContents, member);
+
             paymentsRepository.save(payments);
         }
 
@@ -73,8 +67,6 @@ public class PaymentsService {
         member.setMembershipStatus("유료회원");
         memberRepository.save(member);
     }
-
-
 
     public GameContents getGameContentsForPayment(Payments payment) {
         GameContents gameContents = gameService.getGameContents(payment.getGameContents().getGameContentNo());

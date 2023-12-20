@@ -45,4 +45,22 @@ public class Payments {
     @JoinColumn(name = "member_no", referencedColumnName = "member_no") // 외래 키 설정
     private Member member;
 
+    // 기본 생성자
+    public Payments() {
+    }
+
+    // 모든 필드 초기화하는 생성자
+    public Payments(Integer orderNumber, String contact, String method, LocalDateTime paymentDate, String status,
+                    Double amount, String depositorName, GameContents gameContents, Member member) {
+        this.orderNumber = orderNumber;
+        this.contact = contact;
+        this.method = method;
+        this.paymentDate = paymentDate;
+        this.status = status;
+        this.amount = amount;
+        this.depositorName = depositorName;
+        this.gameContents = gameContents;
+        this.member = member;
+    }
+
 }

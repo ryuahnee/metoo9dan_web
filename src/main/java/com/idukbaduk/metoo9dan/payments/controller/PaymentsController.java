@@ -110,7 +110,7 @@ public class PaymentsController {
         List<GameContents> selectedGameContents = (List<GameContents>) session.getAttribute("selectedGameContents");
         Member member = memberService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        // 결제 방법에 따라 처리
+        // 결제 처리
         paymentsService.processPayment(selectedGameContents, member, paymentMethod);
 
         // 결제 성공시 결제 내역으로 이동

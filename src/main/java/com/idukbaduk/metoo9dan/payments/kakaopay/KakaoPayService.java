@@ -78,7 +78,7 @@ public class KakaoPayService {
                 requestEntity,
                 KakaoApproveResponse.class);
 
-        paymentsService.save(selectedGameContents, member, pay);
+        paymentsService.processPayment(selectedGameContents, member, pay);
         memberService.userUpdate(member);
         return approveResponse;
     }
