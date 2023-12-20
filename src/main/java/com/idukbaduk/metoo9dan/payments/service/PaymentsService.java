@@ -54,7 +54,7 @@ public class PaymentsService {
     @Transactional
     public void processPayment(List<GameContents> selectedGameContents, Member member, String paymentMethod) {
         int orderNumber = generateOrderNumber();
-
+    // 해당 부분 수정 필요 함
         for (GameContents gameContents : selectedGameContents) {
             Payments payments = new Payments(orderNumber, member.getTel(), paymentMethod,
                     LocalDateTime.now(), "complete", gameContents.getSalePrice(),

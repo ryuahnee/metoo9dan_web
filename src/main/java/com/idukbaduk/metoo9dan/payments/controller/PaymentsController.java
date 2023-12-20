@@ -5,7 +5,6 @@ import com.idukbaduk.metoo9dan.education.service.EducationService;
 import com.idukbaduk.metoo9dan.education.service.ResourcesFilesService;
 import com.idukbaduk.metoo9dan.game.service.GameService;
 import com.idukbaduk.metoo9dan.member.service.MemberService;
-import com.idukbaduk.metoo9dan.member.service.MemberServiceImpl;
 import com.idukbaduk.metoo9dan.payments.kakaopay.KakaoApproveResponse;
 import com.idukbaduk.metoo9dan.payments.kakaopay.KakaoPayService;
 import com.idukbaduk.metoo9dan.payments.service.PaymentsService;
@@ -14,31 +13,19 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONString;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.*;
-import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.Principal;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/payments")
@@ -50,7 +37,6 @@ public class PaymentsController {
     private final KakaoPayService kakaoPayService;
     private final PaymentsService paymentsService;
     private final MemberService memberService;
-    private final MemberServiceImpl memberServicesimpl;
     private final ResourcesFilesService resourcesFilesService;
 
 
@@ -58,10 +44,10 @@ public class PaymentsController {
     @RequestMapping(value = "/paymentsform", method = {RequestMethod.GET, RequestMethod.POST})
     @PostMapping("/paymentsform")
     @PreAuthorize("hasAuthority('EDUCATOR') or hasAuthority('NORMAL') or hasAuthority('ADMIN')")
-    public String paymentsform(@RequestParam(name = "gameContentNos") String gameContentNos, Model model, HttpSession session,Principal principal) {
+    public String paymentsform(@RequestParam(name = "gameContentNos") String gameContentNos, Model model, HttpSession session) {
 
 
-        Member user = memberService.getUser(principal.getName());
+        Member user = memberService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
         session.setAttribute("user",user);
 
         try {
@@ -120,9 +106,9 @@ public class PaymentsController {
     //구매 목록조회
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('EDUCATOR') or hasAuthority('NORMAL') or hasAuthority('ADMIN')")
-    public String paymentsList(Model model, @RequestParam(value = "page", defaultValue = "0") int page, Payments payments,Principal principal) {
+    public String paymentsList(Model model, @RequestParam(value = "page", defaultValue = "0") int page, Payments payments) {
 
-        Member member = memberService.getUser(principal.getName());
+        Member member = memberService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
         Page<Payments> paymentsPage = paymentsService.paymentsList(member.getMemberNo(), page);
 
         // Create a list to store the associated GameContents
@@ -168,7 +154,7 @@ public class PaymentsController {
 
     //상세조회
     @GetMapping("/detail/{gameContentNo}")
-    public String paymentDetail(@PathVariable Integer gameContentNo,Model model, Payments payments,Principal principal) {
+    public String paymentDetail(@PathVariable Integer gameContentNo,Model model, Payments payments) {
 
             GameContents gameContents = gameService.getGameContents(gameContentNo);
 
@@ -194,15 +180,14 @@ public class PaymentsController {
         return "payments/detail";
     }
 
-
     // 결제 성공시
     @GetMapping("/success")
-    public String afterPayRequest(@RequestParam("pg_token") String pgToken, Model model, Principal principal, HttpSession session, HttpServletRequest request) {
+    public String afterPayRequest(@RequestParam("pg_token") String pgToken, Model model, HttpSession session, HttpServletRequest request) {
 
         List<GameContents> selectedGameContents = (List<GameContents>) session.getAttribute("selectedGameContents");
         int totalSalePrice = (int) session.getAttribute("totalSalePrice");
 
-        Member member = memberService.getUser(principal.getName());
+        Member member = memberService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
         String pay = "pay";
         KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(pgToken,member,selectedGameContents,pay,member.getMemberId());
 
