@@ -14,8 +14,12 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONString;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -51,10 +55,11 @@ public class PaymentsController {
 
 
     // 결제하기 폼
-    //@RequestMapping(value = "/paymentsform", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/paymentsform", method = {RequestMethod.GET, RequestMethod.POST})
     @PostMapping("/paymentsform")
     @PreAuthorize("hasAuthority('EDUCATOR') or hasAuthority('NORMAL') or hasAuthority('ADMIN')")
     public String paymentsform(@RequestParam(name = "gameContentNos") String gameContentNos, Model model, HttpSession session,Principal principal) {
+
 
         Member user = memberService.getUser(principal.getName());
         session.setAttribute("user",user);
@@ -100,24 +105,15 @@ public class PaymentsController {
 
     // 결제하기
     @PostMapping("/payments")
-    @Transactional
-    public String processPayment(@RequestParam(value = "paymentMethod") String paymentMethod,HttpSession session,
-                                 Principal principal) {
+    public String processPayment(@RequestParam(value = "paymentMethod") String paymentMethod,HttpSession session) {
 
         List<GameContents> selectedGameContents = (List<GameContents>) session.getAttribute("selectedGameContents");
-        int totalSalePrice = (int) session.getAttribute("totalSalePrice");
-        Member member = memberService.getUser(principal.getName());
+        Member member = memberService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        // paymentMethod 변수에 선택한 결제 방법이 무통장이면
-        if(paymentMethod.equals("deposit")){
-            paymentsService.save(selectedGameContents,member,paymentMethod);
-            memberServicesimpl.userUpdate(member);
-        }else if(paymentMethod.equals("account")){
-            paymentsService.save(selectedGameContents,member,paymentMethod);
-            memberServicesimpl.userUpdate(member);
-        }else {
-            return "payments/paymentsform";
-        }
+        // 결제 방법에 따라 처리
+        paymentsService.processPayment(selectedGameContents, member, paymentMethod);
+
+        // 결제 성공시 결제 내역으로 이동
         return "redirect:/payments/list";
     }
 

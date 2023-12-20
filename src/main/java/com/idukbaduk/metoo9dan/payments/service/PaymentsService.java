@@ -4,6 +4,7 @@ import com.idukbaduk.metoo9dan.common.entity.GameContents;
 import com.idukbaduk.metoo9dan.common.entity.Member;
 import com.idukbaduk.metoo9dan.common.entity.Payments;
 import com.idukbaduk.metoo9dan.game.service.GameService;
+import com.idukbaduk.metoo9dan.member.repository.MemberRepository;
 import com.idukbaduk.metoo9dan.payments.repository.PaymentsRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,6 +25,7 @@ public class PaymentsService {
 
     private final PaymentsRepository paymentsRepository;
     private final GameService gameService;
+    private final MemberRepository memberRepository;
     private EntityManager entityManager;
 
     // 구매한 게임컨텐츠에 대한 정보를 가져온다.
@@ -48,23 +51,30 @@ public class PaymentsService {
     }
 
     //결제하기
-    public void save(List<GameContents> selectedGameContents, Member member, String paymentMethod){
-        int orderNumber =  generateOrderNumber();
+    @Transactional
+    public void processPayment(List<GameContents> selectedGameContents, Member member, String paymentMethod) {
+        int orderNumber = generateOrderNumber();
 
-        for(GameContents gameContents: selectedGameContents){
+        for (GameContents gameContents : selectedGameContents) {
             Payments payments = new Payments();
             payments.setOrderNumber(orderNumber);
             payments.setContact(member.getTel());
             payments.setMethod(paymentMethod);
             payments.setPaymentDate(LocalDateTime.now());
-            payments.setStatus("complete");     //complete,waiting,refund
+            payments.setStatus("complete"); // complete,waiting,refund
             payments.setAmount(gameContents.getSalePrice());
             payments.setDepositorName(member.getName());
             payments.setGameContents(gameContents);
             payments.setMember(member);
             paymentsRepository.save(payments);
         }
+
+        // 모든 결제 처리 후 멤버십 상태 변경
+        member.setMembershipStatus("유료회원");
+        memberRepository.save(member);
     }
+
+
 
     public GameContents getGameContentsForPayment(Payments payment) {
         GameContents gameContents = gameService.getGameContents(payment.getGameContents().getGameContentNo());
