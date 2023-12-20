@@ -61,9 +61,13 @@ public class PaymentsService {
                 throw new PaymentFailedException("Payment method is empty or null");
             }
 
-            Payments payments = new Payments(orderNumber, member.getTel(), paymentMethod,
-                    LocalDateTime.now(), "complete", gameContents.getSalePrice(),
-                    member.getName(), gameContents, member);
+            Payments payments = new Payments(orderNumber,
+                    paymentMethod,
+                    LocalDateTime.now(),
+                    "complete",
+                    gameContents.getSalePrice(),
+                    gameContents,
+                    member);
 
             paymentsRepository.save(payments);
         }

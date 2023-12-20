@@ -58,7 +58,7 @@ public class KakaoPayService {
     /**
      * 결제 완료 승인
      */
-    public KakaoApproveResponse approveResponse(String pgToken, Member member, List<GameContents> selectedGameContents, String pay, String memberId) throws PaymentFailedException {
+    public KakaoApproveResponse approveResponse(String pgToken, Member member, List<GameContents> selectedGameContents, String pay, String memberId){
 
         // 카카오 요청
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
@@ -79,7 +79,11 @@ public class KakaoPayService {
                 requestEntity,
                 KakaoApproveResponse.class);
 
-        paymentsService.processPayment(selectedGameContents, member, pay);
+        try {
+            paymentsService.processPayment(selectedGameContents, member, pay);
+        } catch (PaymentFailedException e) {
+            throw new RuntimeException(e);
+        }
         return approveResponse;
     }
 

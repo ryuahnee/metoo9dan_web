@@ -130,7 +130,6 @@ public class PaymentsController {
         for (Payments payment : paymentsPage) {
             GameContents gameContentsForPayment = paymentsService.getGameContentsForPayment(payment);
 
-            // Fetch and add associated EducationalResources
             List<EducationalResources> educationalResources = educationService.getEducationalResourcesForGameContents(gameContentsForPayment);
             gameContentsForPayment.setEducationalResourcesList(educationalResources);
 

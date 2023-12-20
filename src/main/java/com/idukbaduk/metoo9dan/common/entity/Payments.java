@@ -20,9 +20,6 @@ public class Payments {
     private Integer orderNumber;     //varchar(50) NOT NULL    COMMENT '주문 번호',
 
     @Column
-    private String contact;          //varchar(20)  NOT NULL    COMMENT '연락처',
-
-    @Column
     private String method;           //enum('directtransfer', 'bankaccount', 'kakaopay')    NOT NULL    COMMENT '결제 수단',
 
     @Column(name="payment_date", columnDefinition = "TIMESTAMP")
@@ -33,9 +30,6 @@ public class Payments {
 
     @Column
     private Double amount;           //decimal(10,2) NOT NULL    COMMENT '결제 금액',
-
-    @Column(name="depositor_name")
-    private String depositorName;   //varchar(50)  NULL COMMENT '입금자명',
 
     @ManyToOne(fetch = FetchType.LAZY) // 게임콘텐츠-다대일 관계
     @JoinColumn(name = "game_content_no", referencedColumnName = "game_content_no") // 외래 키 설정
@@ -50,15 +44,13 @@ public class Payments {
     }
 
     // 모든 필드 초기화하는 생성자
-    public Payments(Integer orderNumber, String contact, String method, LocalDateTime paymentDate, String status,
-                    Double amount, String depositorName, GameContents gameContents, Member member) {
+    public Payments(Integer orderNumber, String method, LocalDateTime paymentDate, String status,
+                    Double amount, GameContents gameContents, Member member) {
         this.orderNumber = orderNumber;
-        this.contact = contact;
         this.method = method;
         this.paymentDate = paymentDate;
         this.status = status;
         this.amount = amount;
-        this.depositorName = depositorName;
         this.gameContents = gameContents;
         this.member = member;
     }
