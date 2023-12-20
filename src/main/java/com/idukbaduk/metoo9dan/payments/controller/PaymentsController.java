@@ -93,25 +93,26 @@ public class PaymentsController {
     @PostMapping("/payments")
     public String processPayment(@RequestParam(value = "paymentMethod") String paymentMethod,HttpSession session) {
 
-        List<GameContents> selectedGameContents = (List<GameContents>) session.getAttribute("selectedGameContents");
-        Member member = memberService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
+        try {
+            List<GameContents> selectedGameContents = (List<GameContents>) session.getAttribute("selectedGameContents");
+            Member member = memberService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        // 결제 처리
-        paymentsService.processPayment(selectedGameContents, member, paymentMethod);
+            paymentsService.processPayment(selectedGameContents, member, paymentMethod);
 
-        // 결제 성공시 결제 내역으로 이동
-        return "redirect:/payments/list";
+            return "redirect:/payments/list"; // 결제 성공시 결제 내역으로 이동
+        } catch (Exception e) {
+            return "redirect:/payments/fail"; // 에러시 결제 실패 페이지로 이동
+        }
     }
 
     //구매 목록조회
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('EDUCATOR') or hasAuthority('NORMAL') or hasAuthority('ADMIN')")
-    public String paymentsList(Model model, @RequestParam(value = "page", defaultValue = "0") int page, Payments payments) {
+    public String paymentsList(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
 
         Member member = memberService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
         Page<Payments> paymentsPage = paymentsService.paymentsList(member.getMemberNo(), page);
 
-        // Create a list to store the associated GameContents
         List<GameContents> gameContentsList = new ArrayList<>();
 
         for (Payments payment : paymentsPage) {
@@ -154,7 +155,7 @@ public class PaymentsController {
 
     //상세조회
     @GetMapping("/detail/{gameContentNo}")
-    public String paymentDetail(@PathVariable Integer gameContentNo,Model model, Payments payments) {
+    public String paymentDetail(@PathVariable Integer gameContentNo,Model model) {
 
             GameContents gameContents = gameService.getGameContents(gameContentNo);
 
