@@ -1,4 +1,7 @@
-# 바둑을 게임으로! '나도 9단'  
+<div align="center">
+  
+# 게임으로 바둑을 재미있게! 바둑교육 웹사이트 '나도 9단!'
+</div
 
 <div align="center">
 <img width="80%" alt="스크린샷 2023-10-27 오전 9 50 06" src="https://github.com/ryuahnee/metoo9dan_web/assets/135402890/84c4adb7-b55f-4662-b6c9-063e70a88479">
